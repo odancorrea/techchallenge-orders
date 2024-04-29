@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  api:
+    container_name: lanchonete-orders
+    restart: always
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    networks:
+      - mynetwork
+    depends_on:
+      - nosqldb
+    environment:
+      - PORT=8002
+  nosqldb:
+    image: mongo:3.4.1
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - mynetwork
+    volumes:
+      - mongo:/data/db
+  queue:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mynetwork
+
+volumes:
+  nosqldb:
+
+networks:
+  mynetwork:
+    driver: bridge
