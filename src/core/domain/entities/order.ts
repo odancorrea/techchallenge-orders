@@ -1,12 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ObjectIdColumn } from "typeorm"
 
 @Entity()
 export class Order {
     static ORDER_STATUS_RECEIVED: string = 'recebido'
     static ORDER_STATUS_PREPARING: string = 'preparando'
     static ORDER_STATUS_DONE: string = 'promto'
-    @PrimaryGeneratedColumn()
+    @ObjectIdColumn()
     id?: number
+
+    @Column()
+    idOrder: number
 
     @Column()
     date: Date
@@ -20,7 +23,8 @@ export class Order {
     @Column()
     products: any[]
 
-    constructor (date: Date, status: string, client: number, products: number[]) {
+    constructor (idOrder: number, date: Date, status: string, client: number, products: number[]) {
+        this.idOrder = idOrder
         this.date = date
         this.status = status
         this.client = client

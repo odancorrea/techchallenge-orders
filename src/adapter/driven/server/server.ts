@@ -25,6 +25,7 @@ class Server implements iDrivenAdapter{
     setRoutes() {
         this.app.get('/ping', application.ping)
         this.app.get('/order/:id', orderController.getStatus)
+        this.app.get('/orders', orderController.getOrders)
     }
 
     async start(): Promise<void> {
