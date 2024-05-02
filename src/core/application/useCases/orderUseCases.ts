@@ -9,7 +9,7 @@ class OrderUseCases implements iOrderUseCases {
         return this.orderRepository.create(orderObject)
     }
 
-    async getStatus(id: number): Promise<string | undefined> {
+    async getStatus(id: any): Promise<string | undefined> {
         let order = await this.orderRepository.findById(id)
         if (order) {
             return order.status
@@ -19,6 +19,10 @@ class OrderUseCases implements iOrderUseCases {
     async produce(order: Order): Promise<void> {
         // order produced
         await this.orderRepository.update(Object.assign(order, { status: 'pronto' }))
+    }
+
+    async getOrders(): Promise<any> {
+        return await this.orderRepository.find()
     }
 }
 

@@ -1,5 +1,6 @@
 import amqp from 'amqplib/callback_api'
 import IOrderQueue from '../../../core/domain/repositories/iOrderQueue'
+import orderController from '../../driven/controller/orderController'
 
 class Queue implements IOrderQueue {
     channel: amqp.Channel | undefined
@@ -11,12 +12,12 @@ class Queue implements IOrderQueue {
                 if (error1) throw error1
                 this.channel = channel
                 channel.assertQueue(process.env.QUEUE_NAME || 'orders_queue', { durable: false })
+                channel.consume(process.env.QUEUE_NAME || 'orders_queue', orderController.order, { noAck: true})
             })
         })
     }
 
     async sendToQueue (message: string, queue: string) {
-        console.log(queue)
         this.channel?.sendToQueue(queue, Buffer.from(message))
     }
 
