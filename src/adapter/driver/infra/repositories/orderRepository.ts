@@ -34,17 +34,6 @@ class OrderRepository implements IOrderRepository{
         const order = await orderRepository.save(orderObject)
         return order
     }
-
-    async checkout(order: any): Promise<boolean> {
-        try {
-            const orderRepository = dataSource.getDataSource().getRepository(Order)
-            await orderRepository.delete(order)
-            return true
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    }
 }
 
 export default OrderRepository
