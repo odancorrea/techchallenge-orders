@@ -17,7 +17,6 @@ class OrderUseCases implements iOrderUseCases {
     }
 
     async produce(order: Order): Promise<void> {
-        // order produced
         await this.orderRepository.update(Object.assign(order, { status: 'pronto' }))
     }
 

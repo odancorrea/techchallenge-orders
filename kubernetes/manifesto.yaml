@@ -52,3 +52,4 @@ spec:
         - name: config-volume
           configMap:
             name: lanchonete-orders-config
+
