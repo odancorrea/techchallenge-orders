@@ -11,8 +11,8 @@ class Queue implements IOrderQueue {
             connection.createChannel((error1, channel) => {
                 if (error1) throw error1
                 this.channel = channel
-                channel.assertQueue(process.env.QUEUE_NAME || 'orders_queue', { durable: false })
-                channel.consume(process.env.QUEUE_NAME || 'orders_queue', orderController.order, { noAck: true})
+                channel.assertQueue(process.env.QUEUE_NAME || 'pagamento_aprovado', { durable: false })
+                channel.consume(process.env.QUEUE_NAME || 'pagamento_aprovado', orderController.order, { noAck: true})
             })
         })
     }

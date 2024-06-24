@@ -1,9 +1,10 @@
 import iOrderUseCases from "./iOrderUseCases";
 import { Order } from "../../domain/entities/order";
 import IOrderRepository from "../../domain/repositories/iOrderRepository";
+import IOrderQueue from "../../domain/repositories/iOrderQueue";
 
 class OrderUseCases implements iOrderUseCases {
-    constructor (private orderRepository: IOrderRepository) {}
+    constructor (private orderRepository: IOrderRepository, private orderQueue: IOrderQueue) {}
     
     async create(orderObject: any): Promise<Order | undefined> {
         return this.orderRepository.create(orderObject)
@@ -16,8 +17,20 @@ class OrderUseCases implements iOrderUseCases {
         }
     }
 
-    async produce(order: Order): Promise<void> {
-        await this.orderRepository.update(Object.assign(order, { status: 'pronto' }))
+    async produce(id: any): Promise<void> {
+        let order = await this.orderRepository.findById(id)
+        if (order) await this.orderRepository.update(Object.assign(order, { status: 'pronto' }))
+    }
+
+    async confirm(order: any): Promise<void> {
+        try {
+            await this.orderRepository.update(Object.assign(order, { status: 'confirmado' }))
+            this.orderQueue.sendToQueue(JSON.stringify(order), process.env.CONFIRMED_ORDER || 'pedido_confirmado')
+        } catch (error) {
+            await this.orderRepository.update(Object.assign(order, { status: 'erro' }))
+            this.orderQueue.sendToQueue(JSON.stringify(order), process.env.ERROR_ORDER || 'pedido_erro')
+        }
+        
     }
 
     async getOrders(): Promise<any> {
