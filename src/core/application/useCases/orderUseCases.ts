@@ -25,8 +25,10 @@ class OrderUseCases implements iOrderUseCases {
     async confirm(order: any): Promise<void> {
         try {
             await this.orderRepository.update(Object.assign(order, { status: 'confirmado' }))
+            order.status = 2
             this.orderQueue.sendToQueue(JSON.stringify(order), process.env.CONFIRMED_ORDER || 'pedido_confirmado')
         } catch (error) {
+            order.status = 4
             await this.orderRepository.update(Object.assign(order, { status: 'erro' }))
             this.orderQueue.sendToQueue(JSON.stringify(order), process.env.ERROR_ORDER || 'pedido_erro')
         }

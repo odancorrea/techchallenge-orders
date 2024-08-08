@@ -9,8 +9,7 @@ class OrderController {
         const orderRepository = new OrderRepository()
         const orderUseCase = new OrderUseCases(orderRepository, queue)
         const order = await orderUseCase.create(parsedQueueObject)
-        console.log(order)
-        if (order) await orderUseCase.confirm(order)
+        if (order) await orderUseCase.confirm(parsedQueueObject)
     }
 
     async getStatus(req: Request, res: Response) {
